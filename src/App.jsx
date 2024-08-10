@@ -14,9 +14,9 @@ const App = () => {
   const navigate = useNavigate()
   // getting all the tracks from db
   
-  useEffect(() => {
-    navigate('/tracks');
-  }, [navigate]);
+  // useEffect(() => {
+  //   navigate('/tracks');
+  // }, [navigate]);
 
   const handleAddTrack = async (trackFormData) => {
     const newTrack = await trackService.create(trackFormData)
@@ -33,19 +33,22 @@ const App = () => {
   }
   const handleDeleteTrack = async (trackId) => {
     await trackService.del(trackId);
-    setTracks(tracks.filter(track => 
-      track._id !== trackId
-    ));
-    window.location.reload();
+    const updatedTracks = tracks.filter(track => track._id !== trackId);
+    setTracks(updatedTracks);
+    // when button is clicked, changes wont show up until i refresh the page
+    // so I am forcing a page refresh right after the handleDeletetrack is called
+    // just keeps the interface updated and maybe there is a smarter way to do this?
+    window.location.reload();;
   }
   return (
     <>
       <h1>Welcome</h1>
       
       <Link to="/tracks/add-track"><button style={{ backgroundColor: 'rgba(255, 16, 0, 0.7)'}}>Add New Track</button></Link>
+      <TrackList handleDeleteTrack={handleDeleteTrack} handlePlayTrack={handlePlayTrack} />
       <Routes>
         <Route path="/tracks/add-track" element={<TrackForm handleAddTrack={handleAddTrack} />} />
-        <Route path="/tracks" element={<TrackList handlePlayTrack={handlePlayTrack} handleDeleteTrack={handleDeleteTrack}/>} />    
+        {/* <Route path="/tracks" element={<TrackList handlePlayTrack={handlePlayTrack} handleDeleteTrack={handleDeleteTrack}/>} />     */}
         <Route path="/tracks/edit-track/:trackId" element={<TrackForm handleUpdateTrack={handleUpdateTrack} />} />
       </Routes>
       <NowPlaying track={currentTrack} />

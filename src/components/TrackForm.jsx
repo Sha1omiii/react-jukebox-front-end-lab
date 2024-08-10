@@ -4,21 +4,23 @@ import * as trackService from '../services/trackService'
 
 const TrackForm = (props) => {
     const [formData, setFormData] = useState({ title: '', artist: '' })
-
     const { trackId } = useParams()
+    const [userIsSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (event) => {
         setFormData({ ...formData, [event.target.name] : event.target.value })
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
+        setIsSubmitting(true);
         if(trackId) {
-            props.handleUpdateTrack(trackId, formData)
+            await props.handleUpdateTrack(trackId, formData)
         } else {
-            props.handleAddTrack(formData)
+            await props.handleAddTrack(formData)
         }
         setFormData({ title: '', artist: '' })
+        setIsSubmitting(false);
     }
 
     useEffect(() => {
@@ -56,4 +58,4 @@ const TrackForm = (props) => {
     )
 }
 
-export default TrackForm
+export default TrackForm;
